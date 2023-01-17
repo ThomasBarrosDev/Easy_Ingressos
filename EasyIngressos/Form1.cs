@@ -1,5 +1,7 @@
+using ProjetoCores_1._0;
 using SuperSimpleTcp;
 using System.Text;
+
 
 namespace EasyIngressos
 {
@@ -10,7 +12,8 @@ namespace EasyIngressos
 
         private bool m_IsServer = false;
         private bool m_IsClient = false;
-
+        private float time = 0;
+        private bool isTime = false;
         private List<string> m_listClientIp = new();
         public Form1()
         {
@@ -19,7 +22,8 @@ namespace EasyIngressos
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+           // string txtQuery = "INSERT into Ticket(cod) VALUES('00020101021126440014br.gov.bcb.spi0122fulano2019@example.com5204000053039865802BR5913FULANO DE TAL6008BRASILIA6304DFE3')";
+            //SqliteConn.ExecuteQuery(txtQuery);
             btnSend.Enabled = false;
         }
         private void Events_Disconnected(object? sender, ConnectionEventArgs e)
@@ -145,5 +149,68 @@ namespace EasyIngressos
         {
 
         }
+
+        private async void txtMessage_TextChanged(object sender, EventArgs e)
+        {
+            CheckTimer(() => { ValidateTicket(); } );
+
+
+            /*if (txtMessage.Text.Length == 13)
+            {
+                ValidateTicket();
+            }*/
+
+            /* if (!isTime)
+             {
+                isTime = true;
+                TimeTest();
+             }
+             if (time == 1)
+             {
+                 ValidateTicket();
+             }
+             //if(txtMessage.Text.Length >= 13)
+                */
+
+        }
+        private System.Windows.Forms.Timer _typingTimer;
+        private void CheckTimer(Action act)
+        {
+            if (_typingTimer == null)
+            {
+                _typingTimer = new System.Windows.Forms.Timer { Interval = 300 };
+                _typingTimer.Tick += (sender, args) =>
+                {
+                    if (!(sender is System.Windows.Forms.Timer timer))
+                        return;
+                    act?.Invoke();
+                    timer.Stop();
+                };
+            }
+            _typingTimer.Stop();
+            _typingTimer.Start();
+        }
+        private void ValidateTicket()
+        {            
+            bool validate = Main.ValidateTicket(txtMessage.Text);
+
+            if (!validate)
+            {
+                labelStatus.Text = "Disapproved!";
+                txtMessage.Text = string.Empty;
+            }
+            else
+            {
+                labelStatus.Text = "Approved!";
+                txtMessage.Text = string.Empty;
+            }
+        }
+
+        private async void TimeTest()
+        {
+            Thread.Sleep(1000);
+            time = 1;
+        }
+
     }
 }

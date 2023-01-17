@@ -35,6 +35,7 @@
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.labelStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnStart
@@ -71,21 +72,23 @@
             // txtInfo
             // 
             this.txtInfo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtInfo.Location = new System.Drawing.Point(93, 53);
+            this.txtInfo.Location = new System.Drawing.Point(92, 106);
             this.txtInfo.Multiline = true;
             this.txtInfo.Name = "txtInfo";
             this.txtInfo.ReadOnly = true;
             this.txtInfo.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtInfo.Size = new System.Drawing.Size(309, 210);
+            this.txtInfo.Size = new System.Drawing.Size(309, 56);
             this.txtInfo.TabIndex = 4;
             // 
             // txtMessage
             // 
             this.txtMessage.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.txtMessage.Location = new System.Drawing.Point(93, 269);
+            this.txtMessage.MaxLength = 4000;
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(309, 29);
             this.txtMessage.TabIndex = 5;
+            this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
             // 
             // btnSend
             // 
@@ -108,11 +111,22 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "Message :";
             // 
+            // labelStatus
+            // 
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.labelStatus.Location = new System.Drawing.Point(195, 70);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(63, 21);
+            this.labelStatus.TabIndex = 8;
+            this.labelStatus.Text = "Waiting";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(413, 354);
+            this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnSend);
             this.Controls.Add(this.txtMessage);
@@ -137,5 +151,6 @@
         private TextBox txtMessage;
         private Button btnSend;
         private Label label1;
+        private Label labelStatus;
     }
 }
