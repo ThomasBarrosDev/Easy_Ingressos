@@ -20,7 +20,7 @@ namespace EasyIngressos
         public static bool ValidateTicket(string cod)
         {
 
-            DataTable dataTable = SqliteConn.SelectSearchField(field: "cod", table: "Ticket", search: cod) ;
+            DataTable dataTable = SqliteConn.SelectAll(field: "cod", table: "Ticket", search: cod) ;
             try
             {
                 if (dataTable.Rows[0].Field<string>("cod") == null)

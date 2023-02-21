@@ -38,6 +38,7 @@ namespace ProjetoCores_1._0
             conexao.Close();*/
 
         }
+
         public static void ExecuteQuery(string txtQuery)
         {
             SetConnection();
@@ -47,8 +48,12 @@ namespace ProjetoCores_1._0
             comando.ExecuteNonQuery();
             conexao.Close();
         }
+       /* public static SQLiteDataReader SelectFields(string fields, string table)
+        {
 
-        public static DataTable SelectSearchField(string field, string table, string search)
+        }*/
+
+        public static DataTable SelectAll(string field, string table, string search)
         {
             SetConnection();
 

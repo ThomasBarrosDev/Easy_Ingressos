@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyIngressos
+namespace EasyIngressos.Entity
 {
-    
+
     internal class Ticket
     {
         public string Cod;

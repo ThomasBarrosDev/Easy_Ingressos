@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyIngressos
+namespace EasyIngressos.Managers
 {
-    internal class Event
+    public class TicketManager
     {
-
     }
 }
