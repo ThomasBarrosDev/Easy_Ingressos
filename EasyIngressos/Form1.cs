@@ -27,7 +27,7 @@ namespace EasyIngressos
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            comboBox_Events.SelectedIndex = 0;
 
             // string txtQuery = "INSERT into Ticket(cod) VALUES('00020101021126440014br.gov.bcb.spi0122fulano2019@example.com5204000053039865802BR5913FULANO DE TAL6008BRASILIA6304DFE3')";
             //SqliteConn.ExecuteQuery(txtQuery);
@@ -328,6 +328,11 @@ namespace EasyIngressos
             try
             {
                 await ConectionServer.AuthenticateBackend();
+
+                for (int i = 0; i < EventManager.eventData.Length; i++)
+                {
+                    comboBox_Events.Items.Add($"{EventManager.eventData[i].id} - {EventManager.eventData[i].name}");
+                }
             }
             catch (Exception ex)
             {
@@ -337,11 +342,6 @@ namespace EasyIngressos
             finally
             {
 
-                Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
-
-                EventManager.SetFormData(labels);
-
-                MessageBox.Show(EventManager.eventData[0].tickets[0].code);
             }
 
         }
@@ -373,5 +373,14 @@ namespace EasyIngressos
             }
         }
 
+        private void comboBox_Events_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox_Events.SelectedIndex > 0)
+            {
+                Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
+                EventManager.SetFormData(labels, (comboBox_Events.SelectedIndex - 1));
+
+            }
+        }
     }
 }

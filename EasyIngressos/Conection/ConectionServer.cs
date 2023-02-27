@@ -19,13 +19,13 @@ namespace EasyIngressos.Conection
 
             try
             {
-                var response = await client.PostAsync(LoginResponse.Route, Opptions.Content);
+                var response = await client.PostAsync(LoginRequest.Route, Opptions.Content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var responseObject = JsonSerializer.Deserialize<LoginResponse>(responseContent);
-                    Opptions.Token = responseObject.token;
+                    var responseObject = JsonSerializer.Deserialize<LoginRequest>(responseContent);
+                    Opptions.Token = responseObject.data.token;
 
                     DialogResult result = MessageBox.Show("Sincronizado com o servidor", "Sincronized", MessageBoxButtons.OK);
 
@@ -58,18 +58,14 @@ namespace EasyIngressos.Conection
 
             try
             {
-                var response = await client.GetAsync(WelcomeResponse.Route);
+                var response = await client.GetAsync(EventsResponse.Route);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseObject = JsonSerializer.Deserialize<ConectionServer>(responseContent);
-
-                    DialogResult result = MessageBox.Show(responseObject.data[0].age_classification.ToString(), "dados", MessageBoxButtons.OK);
-
+                    
                     EventManager.eventData = responseObject.data;
-
-                    EventManager.SetSqlData(responseObject.data[0]);
                 }
                 else
                 {
@@ -91,7 +87,7 @@ namespace EasyIngressos.Conection
     }
     public class Opptions
     {
-        public static Uri BaseURL { get; set; } = new Uri("http://localhost:8000/");
+        public static Uri BaseURL { get; set; } = new Uri("https://api.easy.risestudio.com.br/");
         public static string Token;
         public static HttpContent Content = new StringContent(JsonSerializer.Serialize(new Login()), Encoding.UTF8, "application/json");
     }
@@ -99,25 +95,30 @@ namespace EasyIngressos.Conection
 
     public class Login
     {
-        public string email { get; set; } = "thomas";
-        public string password { get; set; } = "123";
+        public string email { get; set; } = "master@risestudio.com.br";
+        public string password { get; set; } = "master*123@";
     }
-    public class LoginResponse
+    public class LoginRequest
+    {
+        public LoginRespose data { get; set; }
+        public bool userValidated { get; set; }
+        public static string Route => "admin/login";
+        public static string Query => "";
+    }
+
+    public class EventsResponse
     {
         public string token { get; set; }
         public bool userValidated { get; set; }
-        public static string Route => "auth/login";
+        public static string Route => "system/events";
         public static string Query => "";
 
     }
-
-    public class WelcomeResponse
+    public class LoginRespose
     {
         public string token { get; set; }
-        public bool userValidated { get; set; }
-        public static string Route => "event";
-        public static string Query => "";
-
+        public string type { get; set; }
+        public string refreshToken { get; set; }
     }
 
 }

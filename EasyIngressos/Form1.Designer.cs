@@ -280,14 +280,12 @@
             this.comboBox_Events.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.comboBox_Events.FormattingEnabled = true;
             this.comboBox_Events.Items.AddRange(new object[] {
-            "Selecione...",
-            "Block 1",
-            "Block 2",
-            "Block 3"});
+            "Selecione..."});
             this.comboBox_Events.Location = new System.Drawing.Point(24, 40);
             this.comboBox_Events.Name = "comboBox_Events";
             this.comboBox_Events.Size = new System.Drawing.Size(480, 33);
             this.comboBox_Events.TabIndex = 37;
+            this.comboBox_Events.SelectedIndexChanged += new System.EventHandler(this.comboBox_Events_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -387,7 +385,7 @@
             this.label_ParentalRating.AutoSize = true;
             this.label_ParentalRating.Font = new System.Drawing.Font("Sitka Small", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label_ParentalRating.ForeColor = System.Drawing.Color.Gray;
-            this.label_ParentalRating.Location = new System.Drawing.Point(229, 223);
+            this.label_ParentalRating.Location = new System.Drawing.Point(227, 269);
             this.label_ParentalRating.Name = "label_ParentalRating";
             this.label_ParentalRating.Size = new System.Drawing.Size(272, 19);
             this.label_ParentalRating.TabIndex = 30;
@@ -396,14 +394,13 @@
             // label_EventName
             // 
             this.label_EventName.AutoEllipsis = true;
-            this.label_EventName.AutoSize = true;
-            this.label_EventName.Font = new System.Drawing.Font("Sitka Small", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label_EventName.Font = new System.Drawing.Font("Sitka Small", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label_EventName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label_EventName.Location = new System.Drawing.Point(226, 180);
+            this.label_EventName.Location = new System.Drawing.Point(222, 176);
             this.label_EventName.Name = "label_EventName";
-            this.label_EventName.Size = new System.Drawing.Size(284, 43);
+            this.label_EventName.Size = new System.Drawing.Size(345, 79);
             this.label_EventName.TabIndex = 29;
-            this.label_EventName.Text = "Neon Night Party";
+            this.label_EventName.Text = "CAMAROTE AVENIDA";
             // 
             // label12
             // 
