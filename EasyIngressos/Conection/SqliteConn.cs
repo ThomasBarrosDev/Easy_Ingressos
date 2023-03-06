@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Windows.Forms;
 using System.Data;
-
+using EasyIngressos.Entity;
+using System.Globalization;
 
 namespace ProjetoCores_1._0
 {
@@ -24,20 +25,6 @@ namespace ProjetoCores_1._0
             conexao = new SQLiteConnection($"Data Source={path}\\Database\\{dataBaseName};Version=3;New=False;Compress=True;");
         }
 
-        public void LoadData(DataGridView datagrid)
-        {
-            /*SetConnection();
-            conexao.Open();
-            comando = conexao.CreateCommand();
-            string comandtxt = "SELECT * FROM CLIENTES";
-            dbadapter = new SQLiteDataAdapter(comandtxt, conexao);
-            ds.Reset();
-            dbadapter.Fill(ds);
-            dt = ds.Tables[0];
-            datagrid.DataSource = dt;
-            conexao.Close();*/
-
-        }
 
         public static void ExecuteQuery(string txtQuery)
         {
@@ -48,12 +35,8 @@ namespace ProjetoCores_1._0
             comando.ExecuteNonQuery();
             conexao.Close();
         }
-       /* public static SQLiteDataReader SelectFields(string fields, string table)
-        {
 
-        }*/
-
-        public static DataTable SelectAll(string field, string table, string search)
+        public static bool ExistValue(string table, string key)
         {
             SetConnection();
 
@@ -62,15 +45,129 @@ namespace ProjetoCores_1._0
             DataTable dt = new DataTable();
 
             comando = conexao.CreateCommand();
-            string comandtxt = $"SELECT * FROM {table.ToUpper()} WHERE {field.ToUpper()} = '{search}'";
+            string comandtxt = $"SELECT * FROM {table.ToUpper()} WHERE id = '{key}'";
 
             dbadapter = new SQLiteDataAdapter(comandtxt, conexao);
             dbadapter.Fill(dt);
 
             conexao.Close();
 
-            return dt;
+            if (dt.Rows.Count > 0)
+                return true;
+            else
+                return false;
+
         }
+
+        public static TicketDataClass SelectTicket(string code)
+        {
+            CultureInfo culture = new CultureInfo("pt-BR");
+            TicketDataClass t = new TicketDataClass();
+            SetConnection();
+
+            conexao.Open();
+
+            comando = conexao.CreateCommand();
+            string comandtxt = $"SELECT * FROM Ticket WHERE code = '{code}'";
+
+            comando.CommandText = comandtxt;
+
+            using (SQLiteDataReader reader = comando.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    t.id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                    t.code = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+
+                    t.subtotal = reader.IsDBNull(2) ? 0 : reader.GetFloat(2);
+                    t.tax_value = reader.IsDBNull(3) ? 0 : reader.GetFloat(3);
+                    t.total = reader.IsDBNull(4) ? 0 : reader.GetFloat(4);
+
+                    t.status = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
+                    t.class_id = reader.IsDBNull(6) ? 0 : reader.GetInt32(6);
+                    t.block_id = reader.IsDBNull(7) ? 0 : reader.GetInt32(7);
+                    t.event_id = reader.IsDBNull(8) ? 0 : reader.GetInt32(8);
+                    t.created_at = reader.IsDBNull(10) ? string.Empty : reader.GetString(10);
+                    t.updated_at = reader.IsDBNull(11) ? string.Empty : reader.GetString(11);
+                    t.deleted_at = reader.IsDBNull(12) ? string.Empty : reader.GetString(12);
+                }
+                conexao.Close();
+            }
+
+            conexao.Open();
+
+            comando = conexao.CreateCommand();
+            comandtxt = $"SELECT * FROM TicketData WHERE ticket_id = '{t.id}'";
+
+            comando.CommandText = comandtxt;
+
+            using (SQLiteDataReader readerData = comando.ExecuteReader())
+            {
+
+                if (readerData.HasRows)
+                {
+                    readerData.Read();
+                    t.name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
+                    t.email = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(2);
+                    t.phone = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(3);
+                    t.cpf_rg = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(4);
+                }
+
+
+            }
+            conexao.Close();
+
+
+            if (t.class_id != 0)
+            {
+                conexao.Open();
+
+                comando = conexao.CreateCommand();
+                comandtxt = $"SELECT * FROM TicketClass WHERE id = '{t.class_id}'";
+
+                comando.CommandText = comandtxt;
+
+                using (SQLiteDataReader readerData = comando.ExecuteReader())
+                {
+
+                    if (readerData.HasRows)
+                    {
+                        readerData.Read();
+                        t.class_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
+                    }
+
+
+                }
+                conexao.Close();
+            }
+
+            if (t.block_id != 0)
+            {
+                conexao.Open();
+
+                comando = conexao.CreateCommand();
+                comandtxt = $"SELECT * FROM TicketBlock WHERE id = '{t.block_id}'";
+
+                comando.CommandText = comandtxt;
+
+                using (SQLiteDataReader readerData = comando.ExecuteReader())
+                {
+
+                    if (readerData.HasRows)
+                    {
+                        readerData.Read();
+                        t.block_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
+                    }
+
+
+                }
+                conexao.Close();
+            }
+
+            return t;
+        }
+
 
     }
 }

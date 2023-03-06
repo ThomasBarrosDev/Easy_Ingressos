@@ -7,6 +7,9 @@ using System;
 using EasyIngressos.Conection;
 using System.Globalization;
 using EasyIngressos.Managers;
+using System.Linq.Expressions;
+using EasyIngressos.Entity;
+using System.Reflection;
 
 namespace EasyIngressos
 {
@@ -25,14 +28,29 @@ namespace EasyIngressos
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+           
             comboBox_Events.SelectedIndex = 0;
 
-            // string txtQuery = "INSERT into Ticket(cod) VALUES('00020101021126440014br.gov.bcb.spi0122fulano2019@example.com5204000053039865802BR5913FULANO DE TAL6008BRASILIA6304DFE3')";
-            //SqliteConn.ExecuteQuery(txtQuery);
-            //btnSend.Enabled = false;
+            try
+            {
+                await ConectionServer.AuthenticateBackend();
 
+                for (int i = 0; i < AppManager.EventsData.Length; i++)
+                {
+                    comboBox_Events.Items.Add($"{AppManager.EventsData[i].id} - {AppManager.EventsData[i].name}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+
+            }
         }
 
         public static DialogResult DialogBox(string title, string promptText, ref string value, string button1 = "OK", string button2 = "Cancel", string button3 = null)
@@ -212,7 +230,7 @@ namespace EasyIngressos
 
                 string value = null;
 
-               
+
 
                 DialogResult result = DialogBox("Conectar ao Servidor", "Conectar a um servidor local ou criar um servidor local?", ref value, "Conectar", "Criar");
 
@@ -258,7 +276,7 @@ namespace EasyIngressos
                     }
 
                 }
-                
+
                 this.TopMost = true;
             }
             else
@@ -272,7 +290,7 @@ namespace EasyIngressos
                 if (m_IsClient)
                 {
                     m_client.Disconnect();
-                    m_IsClient= false;
+                    m_IsClient = false;
                 }
 
                 btnStart.Text = "Conectar";
@@ -284,59 +302,158 @@ namespace EasyIngressos
 
         }
 
-        private System.Windows.Forms.Timer _typingTimer;
-        private void CheckTimer(Action act)
+        public async Task DelayedAction(int millisecondsDelay, Action action)
         {
-            if (_typingTimer == null)
-            {
-                _typingTimer = new System.Windows.Forms.Timer { Interval = 300 };
-                _typingTimer.Tick += (sender, args) =>
-                {
-                    if (!(sender is System.Windows.Forms.Timer timer))
-                        return;
-                    act?.Invoke();
-                    timer.Stop();
-                };
-            }
-            _typingTimer.Stop();
-            _typingTimer.Start();
+            await Task.Delay(millisecondsDelay);
+            action?.Invoke();
         }
+
         private void ValidateTicket(TextBox textBox)
         {
-            bool validate = Main.ValidateTicket(textBox.Text);
+            TicketDataClass ticket = AppManager.ValidateTicket(textBox.Text);
 
-            if (!validate)
-            {
-                //labelStatus.Text = "Disapproved!";
-                textBox.Text = string.Empty;
-            }
-            else
-            {
-                //labelStatus.Text = "Approved!";
-                textBox.Text = string.Empty;
-            }
-        }
+            string nomeImagem;
 
-        private async void TimeTest()
-        {
-            Thread.Sleep(1000);
-            time = 1;
+            Label[] labels = { label_IdIngresso, label_TicketName, label_CPF, label_ParticipantName, label_Email, label_Telefone, label_TicketValidate };
+            Color cor;
+            if (ticket == null)
+            {
+
+                nomeImagem = "times-circle.png";
+
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                {
+                    pictureBox_TicketValidate.Image = Image.FromStream(stream);
+                }
+
+                AppManager.SetFormTicketData(labels);
+
+                label_TicketValidate.Text = "INGRESSO \r\n INEXISTENTE";
+                cor = ColorTranslator.FromHtml("#A1432E");
+                panel_TicketValidate.BackColor = cor;
+
+
+                textBox.Text = string.Empty;
+
+            }
+            else if (ticket.code == textBox.Text)
+            {
+                switch (ticket.status)
+                {
+                    case "active":
+                    case "offline":
+
+                        nomeImagem = "check-circle.png";
+
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
+                        }
+
+                        AppManager.SetFormTicketData(labels, ticket);
+
+                        label_TicketValidate.Text = "INGRESSO \r\n VÁLIDO";
+                        cor = ColorTranslator.FromHtml("#2EA15C");
+                        panel_TicketValidate.BackColor = cor;
+
+                        textBox.Text = string.Empty;
+
+                        break;
+                    case "canceled":
+                        nomeImagem = "exclamation-circle.png";
+
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
+                        }
+
+                        AppManager.SetFormTicketData(labels);
+
+                        label_TicketValidate.Text = "INGRESSO \r\n CANCELADO";
+                        cor = ColorTranslator.FromHtml("#2EA15C");
+                        panel_TicketValidate.BackColor = cor;
+
+                        textBox.Text = string.Empty;
+                        break;
+
+                    case "used":
+                        nomeImagem = "exclamation-circle.png";
+
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
+                        }
+
+                        AppManager.SetFormTicketData(labels);
+
+                        label_TicketValidate.Text = "INGRESSO \r\n JÁ USADO";
+                        cor = ColorTranslator.FromHtml("#2EA15C");
+                        panel_TicketValidate.BackColor = cor;
+
+                        textBox.Text = string.Empty;
+                        break;
+
+                    case "denied":
+                        nomeImagem = "exclamation-circle.png";
+
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
+                        }
+
+                        AppManager.SetFormTicketData(labels);
+
+                        label_TicketValidate.Text = "INGRESSO \r\n NEGADO";
+                        cor = ColorTranslator.FromHtml("#2EA15C");
+                        panel_TicketValidate.BackColor = cor;
+
+                        textBox.Text = string.Empty;
+
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+
+            }
         }
 
         private async void LinkScronizar_Click(object sender, EventArgs e)
         {
             try
             {
-                await ConectionServer.AuthenticateBackend();
-
-                for (int i = 0; i < EventManager.eventData.Length; i++)
+                if (comboBox_Events.SelectedIndex != 0)
                 {
-                    comboBox_Events.Items.Add($"{EventManager.eventData[i].id} - {EventManager.eventData[i].name}");
+                    await ConectionServer.GetEvent(comboBox_Events.SelectedIndex);
+                    DialogResult result = MessageBox.Show("Sincronizado com o servidor", "Sincronized", MessageBoxButtons.OK);
+
+                    if (result == DialogResult.OK)
+                    {
+                        AppManager.SetEventSqlData(AppManager.SelectedEventData);
+
+                        for (int i = 0; i < AppManager.SelectedEventData.ticket_classes.Length; i++)
+                        {
+                            AppManager.SetTicketClasseSqlData(AppManager.SelectedEventData.ticket_classes[i], AppManager.SelectedEventData.id);
+                        }
+
+                        for (int i = 0; i < AppManager.SelectedEventData.tickets.Length; i++)
+                        {
+                            AppManager.SetTicketSqlData(AppManager.SelectedEventData.tickets[i]);
+
+                        }
+                    }
+                }
+                else
+                {
+                    DialogResult result = MessageBox.Show("Selecione um Evento, antes de Sincronizar com o servidor", "Error when syncing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+
                 throw;
             }
             finally
@@ -350,7 +467,7 @@ namespace EasyIngressos
         {
             try
             {
-                await ConectionServer.GetData();
+                await ConectionServer.GetEvent();
             }
             catch (Exception ex)
             {
@@ -367,9 +484,10 @@ namespace EasyIngressos
 
         private void textBox_TicketCode_TextChanged(object sender, EventArgs e)
         {
-            if (textBox_TicketCode.Text.Length >= 13)
+
+            if (textBox_TicketCode.Text.Length >= 12)
             {
-                CheckTimer(() => { ValidateTicket(textBox_TicketCode); });
+                ValidateTicket(textBox_TicketCode);
             }
         }
 
@@ -378,9 +496,11 @@ namespace EasyIngressos
             if (comboBox_Events.SelectedIndex > 0)
             {
                 Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
-                EventManager.SetFormData(labels, (comboBox_Events.SelectedIndex - 1));
+                AppManager.SetFormEventData(labels, (comboBox_Events.SelectedIndex - 1));
 
+                
             }
         }
+
     }
 }

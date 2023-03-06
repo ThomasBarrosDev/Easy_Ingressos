@@ -11,6 +11,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\check-circle.png" />
+    <None Remove="Resources\exclamation-circle.png" />
+    <None Remove="Resources\times-circle.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\check-circle.png" />
+    <EmbeddedResource Include="Resources\exclamation-circle.png" />
+    <EmbeddedResource Include="Resources\times-circle.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SuperSimpleTcp" Version="3.0.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
   </ItemGroup>

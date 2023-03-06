@@ -111,7 +111,7 @@
             // 
             // pictureBox_TicketValidate
             // 
-            this.pictureBox_TicketValidate.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox_TicketValidate.Image")));
+            this.pictureBox_TicketValidate.Image = global::EasyIngressos.Properties.Resources.exclamation_circle;
             this.pictureBox_TicketValidate.InitialImage = null;
             this.pictureBox_TicketValidate.Location = new System.Drawing.Point(40, 12);
             this.pictureBox_TicketValidate.Name = "pictureBox_TicketValidate";
@@ -443,9 +443,9 @@
             this.label_Telefone.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_Telefone.Location = new System.Drawing.Point(296, 249);
             this.label_Telefone.Name = "label_Telefone";
-            this.label_Telefone.Size = new System.Drawing.Size(129, 21);
+            this.label_Telefone.Size = new System.Drawing.Size(110, 21);
             this.label_Telefone.TabIndex = 27;
-            this.label_Telefone.Text = "(35) 99999-9999";
+            this.label_Telefone.Text = "[][][][][][][][][][]";
             // 
             // label_Email
             // 
@@ -456,9 +456,9 @@
             this.label_Email.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_Email.Location = new System.Drawing.Point(49, 249);
             this.label_Email.Name = "label_Email";
-            this.label_Email.Size = new System.Drawing.Size(150, 21);
+            this.label_Email.Size = new System.Drawing.Size(100, 21);
             this.label_Email.TabIndex = 26;
-            this.label_Email.Text = "email@mail.com.br";
+            this.label_Email.Text = "[][][][][][][][][]";
             // 
             // label_CPF
             // 
@@ -471,7 +471,7 @@
             this.label_CPF.Name = "label_CPF";
             this.label_CPF.Size = new System.Drawing.Size(90, 21);
             this.label_CPF.TabIndex = 25;
-            this.label_CPF.Text = "111.111.111-11";
+            this.label_CPF.Text = "[][][][][][][][]";
             // 
             // label_ParticipantName
             // 
@@ -482,9 +482,9 @@
             this.label_ParticipantName.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_ParticipantName.Location = new System.Drawing.Point(49, 180);
             this.label_ParticipantName.Name = "label_ParticipantName";
-            this.label_ParticipantName.Size = new System.Drawing.Size(170, 21);
+            this.label_ParticipantName.Size = new System.Drawing.Size(110, 21);
             this.label_ParticipantName.TabIndex = 24;
-            this.label_ParticipantName.Text = "Nome do Participante";
+            this.label_ParticipantName.Text = "[][][][][][][][][][]";
             // 
             // label_TicketName
             // 
@@ -493,11 +493,11 @@
             this.label_TicketName.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label_TicketName.ForeColor = System.Drawing.Color.Gray;
             this.label_TicketName.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label_TicketName.Location = new System.Drawing.Point(73, 137);
+            this.label_TicketName.Location = new System.Drawing.Point(98, 139);
             this.label_TicketName.Name = "label_TicketName";
-            this.label_TicketName.Size = new System.Drawing.Size(248, 21);
+            this.label_TicketName.Size = new System.Drawing.Size(130, 21);
             this.label_TicketName.TabIndex = 23;
-            this.label_TicketName.Text = "Camarote (3° lote) - Inteira: #308";
+            this.label_TicketName.Text = "[][][][][][][][][][][][]";
             // 
             // label_IdIngresso
             // 
@@ -508,9 +508,9 @@
             this.label_IdIngresso.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_IdIngresso.Location = new System.Drawing.Point(49, 137);
             this.label_IdIngresso.Name = "label_IdIngresso";
-            this.label_IdIngresso.Size = new System.Drawing.Size(25, 21);
+            this.label_IdIngresso.Size = new System.Drawing.Size(20, 21);
             this.label_IdIngresso.TabIndex = 22;
-            this.label_IdIngresso.Text = "01";
+            this.label_IdIngresso.Text = "[]";
             // 
             // label5
             // 
@@ -551,7 +551,7 @@
             // 
             // panel_TicketValidate
             // 
-            this.panel_TicketValidate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(161)))), ((int)(((byte)(92)))));
+            this.panel_TicketValidate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(166)))), ((int)(((byte)(0)))));
             this.panel_TicketValidate.Controls.Add(this.label_TicketValidate);
             this.panel_TicketValidate.Controls.Add(this.pictureBox_TicketValidate);
             this.panel_TicketValidate.Location = new System.Drawing.Point(432, 40);
@@ -561,15 +561,14 @@
             // 
             // label_TicketValidate
             // 
-            this.label_TicketValidate.AutoSize = true;
-            this.label_TicketValidate.Font = new System.Drawing.Font("Sitka Small", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label_TicketValidate.Font = new System.Drawing.Font("Sitka Small", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label_TicketValidate.ForeColor = System.Drawing.Color.White;
-            this.label_TicketValidate.Location = new System.Drawing.Point(8, 56);
+            this.label_TicketValidate.Location = new System.Drawing.Point(0, 56);
             this.label_TicketValidate.Name = "label_TicketValidate";
-            this.label_TicketValidate.Size = new System.Drawing.Size(103, 48);
+            this.label_TicketValidate.Size = new System.Drawing.Size(120, 64);
             this.label_TicketValidate.TabIndex = 17;
-            this.label_TicketValidate.Text = "INGRESSO \r\nVÁLIDO";
-            this.label_TicketValidate.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label_TicketValidate.Text = "TENTE\r\nNOVAMENTE";
+            this.label_TicketValidate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel5
             // 
@@ -652,7 +651,6 @@
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.panel_TicketValidate.ResumeLayout(false);
-            this.panel_TicketValidate.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.ResumeLayout(false);

@@ -11,7 +11,6 @@ namespace EasyIngressos.Conection
 {
     public class ConectionServer
     {
-        public EventData[] data { get; set; }
         public static async Task AuthenticateBackend()
         {
             using var client = new HttpClient();
@@ -24,15 +23,11 @@ namespace EasyIngressos.Conection
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var responseObject = JsonSerializer.Deserialize<LoginRequest>(responseContent);
+                    var responseObject = JsonSerializer.Deserialize<LoginRespose>(responseContent);
                     Opptions.Token = responseObject.data.token;
 
-                    DialogResult result = MessageBox.Show("Sincronizado com o servidor", "Sincronized", MessageBoxButtons.OK);
+                    await GetEvent();
 
-                    if (result == DialogResult.OK)
-                    {
-                        await GetData();
-                    }
                 }
                 else
                 {
@@ -43,14 +38,15 @@ namespace EasyIngressos.Conection
             {
                 Console.WriteLine(ex.Message);
                 throw;
-            }finally
+            }
+            finally
             {
                 client.Dispose();
             }
 
         }
 
-        public static async Task GetData()
+        public static async Task GetEvent()
         {
             using var client = new HttpClient();
             client.BaseAddress = Opptions.BaseURL;
@@ -58,14 +54,49 @@ namespace EasyIngressos.Conection
 
             try
             {
-                var response = await client.GetAsync(EventsResponse.Route);
+                var response = await client.GetAsync(EventsRequest.Route);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var responseObject = JsonSerializer.Deserialize<ConectionServer>(responseContent);
-                    
-                    EventManager.eventData = responseObject.data;
+                    var responseObject = JsonSerializer.Deserialize<EventsRespose>(responseContent);
+
+                    AppManager.EventsData = responseObject.data;
+                }
+                else
+                {
+                    Console.WriteLine("Request failed with status code: " + response.StatusCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+            finally
+            {
+                client.Dispose();
+            }
+
+
+        }
+
+        public static async Task GetEvent(int id)
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = Opptions.BaseURL;
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Opptions.Token}");
+
+            try
+            {
+                var response = await client.GetAsync($"{EventsRequest.Route}/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var responseObject = JsonSerializer.Deserialize<EventRespose>(responseContent);
+
+                    AppManager.SelectedEventData = responseObject.data;
                 }
                 else
                 {
@@ -92,6 +123,7 @@ namespace EasyIngressos.Conection
         public static HttpContent Content = new StringContent(JsonSerializer.Serialize(new Login()), Encoding.UTF8, "application/json");
     }
 
+    #region Resquests and Responses
 
     public class Login
     {
@@ -100,13 +132,12 @@ namespace EasyIngressos.Conection
     }
     public class LoginRequest
     {
-        public LoginRespose data { get; set; }
         public bool userValidated { get; set; }
         public static string Route => "admin/login";
         public static string Query => "";
     }
 
-    public class EventsResponse
+    public class EventsRequest
     {
         public string token { get; set; }
         public bool userValidated { get; set; }
@@ -114,12 +145,28 @@ namespace EasyIngressos.Conection
         public static string Query => "";
 
     }
+
     public class LoginRespose
+    {
+        public LoginData data { get; set; }
+    }
+
+    public class EventsRespose
+    {
+        public EventData[] data { get; set; }
+    }
+
+    public class EventRespose
+    {
+        public EventData data { get; set; }
+    }
+
+    public class LoginData
     {
         public string token { get; set; }
         public string type { get; set; }
         public string refreshToken { get; set; }
     }
-
+    #endregion
 }
 
