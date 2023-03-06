@@ -13,12 +13,16 @@
   <ItemGroup>
     <None Remove="Resources\check-circle.png" />
     <None Remove="Resources\exclamation-circle.png" />
+    <None Remove="Resources\Offline.png" />
+    <None Remove="Resources\Online.png" />
     <None Remove="Resources\times-circle.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\check-circle.png" />
     <EmbeddedResource Include="Resources\exclamation-circle.png" />
+    <EmbeddedResource Include="Resources\Offline.png" />
+    <EmbeddedResource Include="Resources\Online.png" />
     <EmbeddedResource Include="Resources\times-circle.png" />
   </ItemGroup>
 

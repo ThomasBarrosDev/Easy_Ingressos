@@ -10,6 +10,9 @@ using EasyIngressos.Managers;
 using System.Linq.Expressions;
 using EasyIngressos.Entity;
 using System.Reflection;
+using System.Net.NetworkInformation;
+using System.Runtime.ConstrainedExecution;
+using System.Timers;
 
 namespace EasyIngressos
 {
@@ -30,26 +33,173 @@ namespace EasyIngressos
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-           
+            System.Timers.Timer timer = new System.Timers.Timer(600);
+            timer.Elapsed += CheckInternetConnection;
+            timer.Start();
+
             comboBox_Events.SelectedIndex = 0;
-
-            try
+            if (CheckConnection())
             {
-                await ConectionServer.AuthenticateBackend();
-
-                for (int i = 0; i < AppManager.EventsData.Length; i++)
+                try
                 {
-                    comboBox_Events.Items.Add($"{AppManager.EventsData[i].id} - {AppManager.EventsData[i].name}");
+                    await ConectionServer.AuthenticateBackend();
+
+                    for (int i = 0; i < AppManager.EventsData.Length; i++)
+                    {
+                        comboBox_Events.Items.Add($"{AppManager.EventsData[i].id} - {AppManager.EventsData[i].name}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
+                finally
+                {
+
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-            finally
-            {
+                comboBox_Events.Enabled = false;
 
+            }
+        }
+
+        public void CheckInternetConnection(Object source, ElapsedEventArgs e)
+        {
+            string nomeImagem;
+            Color cor;
+
+            if (CheckConnection())
+            {
+                if (labelStatus.InvokeRequired)
+                {
+                    labelStatus.Invoke((MethodInvoker)delegate
+                    {
+                        labelStatus.Text = "Online";
+                        cor = ColorTranslator.FromHtml("#47ac70");
+                        nomeImagem = "Online.png";
+                        labelStatus.ForeColor = cor;
+
+                        if (pictureStatus.InvokeRequired)
+                        {
+                            pictureStatus.Invoke((MethodInvoker)delegate
+                            {
+                                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                                {
+                                    pictureStatus.Image = Image.FromStream(stream);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                            {
+                                pictureStatus.Image = Image.FromStream(stream);
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    labelStatus.Text = "Online";
+                    cor = ColorTranslator.FromHtml("#47ac70");
+                    nomeImagem = "Online.png";
+                    labelStatus.ForeColor = cor;
+
+                    if (pictureStatus.InvokeRequired)
+                    {
+                        pictureStatus.Invoke((MethodInvoker)delegate
+                        {
+                            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                            {
+                                pictureStatus.Image = Image.FromStream(stream);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureStatus.Image = Image.FromStream(stream);
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                if (labelStatus.InvokeRequired)
+                {
+                    labelStatus.Invoke((MethodInvoker)delegate
+                    {
+                        labelStatus.Text = "Offline";
+                        cor = ColorTranslator.FromHtml("#a1432e");
+                        nomeImagem = "Offline.png";
+                        labelStatus.ForeColor = cor;
+
+                        if (pictureStatus.InvokeRequired)
+                        {
+                            pictureStatus.Invoke((MethodInvoker)delegate
+                            {
+                                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                                {
+                                    pictureStatus.Image = Image.FromStream(stream);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                            {
+                                pictureStatus.Image = Image.FromStream(stream);
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    labelStatus.Text = "Offline";
+                    cor = ColorTranslator.FromHtml("#a1432e");
+                    nomeImagem = "Offline.png";
+                    labelStatus.ForeColor = cor;
+
+                    if (pictureStatus.InvokeRequired)
+                    {
+                        pictureStatus.Invoke((MethodInvoker)delegate
+                        {
+                            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                            {
+                                pictureStatus.Image = Image.FromStream(stream);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
+                        {
+                            pictureStatus.Image = Image.FromStream(stream);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public static bool CheckConnection()
+        {
+            try
+            {
+                using (var ping = new Ping())
+                {
+                    var result = ping.Send("www.google.com", 1000);
+                    return result.Status == IPStatus.Success;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -496,9 +646,7 @@ namespace EasyIngressos
             if (comboBox_Events.SelectedIndex > 0)
             {
                 Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
-                AppManager.SetFormEventData(labels, (comboBox_Events.SelectedIndex - 1));
-
-                
+                AppManager.SetFormEventData(labels, AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)]);
             }
         }
 

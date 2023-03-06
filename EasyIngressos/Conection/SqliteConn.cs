@@ -168,6 +168,38 @@ namespace ProjetoCores_1._0
             return t;
         }
 
+        public static EventData SelectEvent()
+        {
+
+            CultureInfo culture = new CultureInfo("pt-BR");
+            EventData e = new EventData();
+            SetConnection();
+
+            conexao.Open();
+
+            comando = conexao.CreateCommand();
+            string comandtxt = $"SELECT * FROM Ticket WHERE code = '{code}'";
+
+            comando.CommandText = comandtxt;
+
+            using (SQLiteDataReader reader = comando.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    e.name = reader.IsDBNull(0) ? 0 : reader.GetString(0);
+                    e.age_classification = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
+                    e.due_date = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
+                    e.address.street = reader.IsDBNull(3) ? string.Empty : reader.GetString(3);
+                    e.address.city = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
+                    e.address.uf = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
+                }
+                conexao.Close();
+            }
+
+            return e;
+
+        }
 
     }
 }

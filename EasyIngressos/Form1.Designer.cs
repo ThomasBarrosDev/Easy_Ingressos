@@ -36,8 +36,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.TitleLabel = new System.Windows.Forms.Label();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.label18 = new System.Windows.Forms.Label();
+            this.pictureStatus = new System.Windows.Forms.PictureBox();
+            this.labelStatus = new System.Windows.Forms.Label();
             this.LinkScronizar = new System.Windows.Forms.Label();
             this.ImageScronizar = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -75,7 +75,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageScronizar)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -167,27 +167,27 @@
             this.pictureBox8.TabIndex = 39;
             this.pictureBox8.TabStop = false;
             // 
-            // pictureBox6
+            // pictureStatus
             // 
-            this.pictureBox6.BackColor = System.Drawing.Color.White;
-            this.pictureBox6.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox6.Image")));
-            this.pictureBox6.InitialImage = null;
-            this.pictureBox6.Location = new System.Drawing.Point(1460, 22);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(21, 23);
-            this.pictureBox6.TabIndex = 36;
-            this.pictureBox6.TabStop = false;
+            this.pictureStatus.BackColor = System.Drawing.Color.White;
+            this.pictureStatus.Image = global::EasyIngressos.Properties.Resources.Online;
+            this.pictureStatus.InitialImage = null;
+            this.pictureStatus.Location = new System.Drawing.Point(1460, 22);
+            this.pictureStatus.Name = "pictureStatus";
+            this.pictureStatus.Size = new System.Drawing.Size(21, 23);
+            this.pictureStatus.TabIndex = 36;
+            this.pictureStatus.TabStop = false;
             // 
-            // label18
+            // labelStatus
             // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(161)))), ((int)(((byte)(92)))));
-            this.label18.Location = new System.Drawing.Point(1487, 22);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(61, 21);
-            this.label18.TabIndex = 17;
-            this.label18.Text = "Online";
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.labelStatus.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(161)))), ((int)(((byte)(92)))));
+            this.labelStatus.Location = new System.Drawing.Point(1487, 22);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(61, 21);
+            this.labelStatus.TabIndex = 17;
+            this.labelStatus.Text = "Online";
             // 
             // LinkScronizar
             // 
@@ -585,8 +585,8 @@
             this.panel5.Controls.Add(this.LinkScronizar);
             this.panel5.Controls.Add(this.pictureBox8);
             this.panel5.Controls.Add(this.label2);
-            this.panel5.Controls.Add(this.pictureBox6);
-            this.panel5.Controls.Add(this.label18);
+            this.panel5.Controls.Add(this.pictureStatus);
+            this.panel5.Controls.Add(this.labelStatus);
             this.panel5.Location = new System.Drawing.Point(-216, 112);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(1920, 64);
@@ -640,7 +640,7 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ImageScronizar)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
@@ -694,8 +694,8 @@
         private PictureBox pictureBox4;
         private Label label_EventAddress;
         private Label label_EventHours;
-        private PictureBox pictureBox6;
-        private Label label18;
+        private PictureBox pictureStatus;
+        private Label labelStatus;
         private PictureBox pictureBox8;
         private Panel panel5;
         private Label label3;

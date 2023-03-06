@@ -21,28 +21,28 @@ namespace EasyIngressos.Managers
         public static EventData SelectedEventData { get; set; }
 
 
-        public static void SetFormEventData(Label[] labels, int idEvent)
+        public static void SetFormEventData(Label[] labels, EventData Event)
         {
             foreach (var item in labels)
             {
                 switch (item.Name)
                 {
                     case "label_EventName":
-                        item.Text = EventsData[idEvent].name;
+                        item.Text = Event.name;
                         break;
                     case "label_ParentalRating":
-                        item.Text = $"CLASSIFICAÇÃO INDICATIVA: {EventsData[idEvent].age_classification} ANOS";
+                        item.Text = $"CLASSIFICAÇÃO INDICATIVA: {Event.age_classification} ANOS";
                         break;
                     case "label_EventDate":
-                        string dateString = EventsData[idEvent].due_date;
+                        string dateString = Event.due_date;
                         DateTime date = DateTime.Parse(dateString);
                         item.Text = date.ToString("dddd, dd MMMM", new CultureInfo("pt-BR"));
                         break;
                     case "label_EventAddress":
-                        item.Text = $"{EventsData[idEvent].address.street}, {EventsData[idEvent].address.city} - {EventsData[idEvent].address.uf}";
+                        item.Text = $"{Event.address.street}, {Event.address.city} - {Event.address.uf}";
                         break;
                     case "label_EventHours":
-                        string hoursString = EventsData[idEvent].due_date;
+                        string hoursString = Event.due_date;
                         DateTime hours = DateTime.Parse(hoursString);
                         item.Text = $"{hours.ToString("HH:mm")} horas";
                         break;
