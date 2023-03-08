@@ -62,6 +62,13 @@ namespace EasyIngressos.Conection
                     var responseObject = JsonSerializer.Deserialize<EventsRespose>(responseContent);
 
                     AppManager.EventsData = responseObject.data;
+
+                    for (int i = 0; i < responseObject.data.Length; i++)
+                    {
+                        AppManager.EventsData[i].address.event_id = responseObject.data[i].id;
+                    }
+
+
                 }
                 else
                 {

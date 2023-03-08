@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace EasyIngressos.Managers
@@ -102,13 +103,13 @@ namespace EasyIngressos.Managers
                         item.Text = "[][][][][][][][][][]";
                         break;
                     case "label_ParticipantName":
-                       item.Text = "[][][][][][][][][][]";
+                        item.Text = "[][][][][][][][][][]";
                         break;
                     case "label_CPF":
                         item.Text = "[][][][][][][][][][]";
                         break;
                     case "label_Email":
-                       item.Text = "[][][][][][][][][][]";
+                        item.Text = "[][][][][][][][][][]";
                         break;
                     case "label_Telefone":
                         item.Text = "[][][][][][][][][][]";
@@ -121,7 +122,7 @@ namespace EasyIngressos.Managers
         }
         public static void SetEventSqlData(EventData data)
         {
-            if (!SqliteConn.ExistValue("EventData", data.id.ToString()))
+            if (!SqliteConn.ExistValue("EventData"))
             {
                 string insertSql = $"INSERT INTO EventData (id, name, slug, ticket_name, " +
                     $"due_date, alternative_date_start, alternative_date_end, " +
@@ -137,13 +138,39 @@ namespace EasyIngressos.Managers
                     $"'{data.info}','{data.category_id}','{data.provider_id}','{data.address_id}','{data.status}')";
 
                 SqliteConn.ExecuteQuery(insertSql);
-            }
 
+                data.address.event_id = data.id;
+
+                SetAdressSqlData(data.address);
+            }
+            else
+            {
+                string deleteTickets = "DELETE FROM ticket"; 
+                SqliteConn.ExecuteQuery(deleteTickets);
+
+                string deleteTicketsData = "DELETE FROM ticketdata";
+                SqliteConn.ExecuteQuery(deleteTicketsData);
+
+                string deleteBlocks = "DELETE FROM ticketblock";
+                SqliteConn.ExecuteQuery(deleteBlocks);
+
+                string deleteClass = "DELETE FROM ticketclass";
+                SqliteConn.ExecuteQuery(deleteClass);
+
+                string deleteAdress = "DELETE FROM adress";
+                SqliteConn.ExecuteQuery(deleteAdress);
+
+                string deleteEvent = "DELETE FROM EventData";
+                SqliteConn.ExecuteQuery(deleteEvent);
+
+                SetEventSqlData(data);
+            }
+            
         }
 
         public static void SetTicketClasseSqlData(EventData.TicketClass data, int eventId)
         {
-            if (!SqliteConn.ExistValue("TicketClass", data.id.ToString()))
+            if (!SqliteConn.ExistValueById("TicketClass", data.id.ToString()))
             {
                 string insertSql = $"INSERT INTO TicketClass (id, name, type, event_id) VALUES " +
                 $"('{data.id}', '{data.name}', '{data.type}', {eventId})";
@@ -157,7 +184,7 @@ namespace EasyIngressos.Managers
                         SetTicketBlockSqlData(data.ticket_blocks[i], data.id);
                     }
                 }
-               
+
 
             }
         }
@@ -170,7 +197,7 @@ namespace EasyIngressos.Managers
                 price = data.price.Value;
             }
 
-            if (!SqliteConn.ExistValue("TicketBlock", data.id.ToString()))
+            if (!SqliteConn.ExistValueById("TicketBlock", data.id.ToString()))
             {
                 string insertSql = $"INSERT INTO TicketBlock (id, name, price, type, expires_at, class_id) VALUES " +
                 $"('{data.id}', '{data.name}', '{price.ToString("F2", culture)}', '{data.type}', '{data.expires_at}', '{idClass}')";
@@ -181,7 +208,7 @@ namespace EasyIngressos.Managers
 
         public static void SetTicketDataSqlData(EventData.TicketData data, int TicketId)
         {
-            if (!SqliteConn.ExistValue("TicketData", data.id.ToString()))
+            if (!SqliteConn.ExistValueById("TicketData", data.id.ToString()))
             {
                 string insertSql = $"INSERT INTO TicketData (name, email, phone, cpf_rg, ticket_id) VALUES " +
                 $"('{data.name}', '{data.email}', '{data.phone}', '{data.cpf_rg}', '{TicketId}')";
@@ -189,9 +216,22 @@ namespace EasyIngressos.Managers
                 SqliteConn.ExecuteQuery(insertSql);
             }
         }
+
+        public static void SetAdressSqlData(EventData.Address data)
+        {
+            if (!SqliteConn.ExistValueByname("Adress", data.name))
+            {
+                string insertSql = $"INSERT INTO Adress (name, image, street, number, complement, district, city, uf, zipcode, lat, lon, event_id) VALUES " +
+                $"('{data.name}', '{data.image}', '{data.street}', '{data.number}', '{data.complement}', '{data.district}', '{data.city}', '{data.uf}', '{data.zipcode}', '{data.lat}'" +
+                $", '{data.lon}', '{data.event_id}')";
+
+                SqliteConn.ExecuteQuery(insertSql);
+            }
+        }
+
         public static void SetTicketSqlData(EventData.Ticket data)
         {
-            if (!SqliteConn.ExistValue("Ticket", data.id.ToString()))
+            if (!SqliteConn.ExistValueById("Ticket", data.id.ToString()))
             {
                 string insertSql = $"INSERT INTO Ticket (id, code, subtotal, tax_value, " +
                 $"total, status, " +
@@ -203,10 +243,10 @@ namespace EasyIngressos.Managers
                 $"'{data.updated_at}', '{data.deleted_at}')";
                 SqliteConn.ExecuteQuery(insertSql);
 
-                if (data.ticket_data == null)
+                /*if (data.ticket_data == null)
                     return;
-                
-                SetTicketDataSqlData(data.ticket_data, data.id);               
+
+                SetTicketDataSqlData(data.ticket_data, data.id);*/
             }
         }
 

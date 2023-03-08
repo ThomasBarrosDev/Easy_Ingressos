@@ -65,6 +65,7 @@ namespace EasyIngressos.Entity
             public string zipcode { get; set; }
             public string lat { get; set; }
             public string lon { get; set; }
+            public int event_id { get; set; }
 
         }
 
@@ -102,7 +103,7 @@ namespace EasyIngressos.Entity
             public string created_at { get; set; }
             public string updated_at { get; set; }
             public string? deleted_at { get; set; }
-            public TicketData ticket_data { get; set; }
+            //public TicketData ticket_data { get; set; }
         }
 
         [Serializable]

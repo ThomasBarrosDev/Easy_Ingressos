@@ -33,11 +33,14 @@ namespace EasyIngressos
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            System.Timers.Timer timer = new System.Timers.Timer(600);
+            System.Timers.Timer timer = new System.Timers.Timer(10000);
             timer.Elapsed += CheckInternetConnection;
             timer.Start();
-
+                
             comboBox_Events.SelectedIndex = 0;
+
+            CheckInternetConnection();
+
             if (CheckConnection())
             {
                 try
@@ -63,10 +66,22 @@ namespace EasyIngressos
             {
                 comboBox_Events.Enabled = false;
 
+                EventData lEventdata = SqliteConn.SelectEvent();
+
+                Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
+
+
+                AppManager.SetFormEventData(labels, lEventdata);
+
             }
         }
 
         public void CheckInternetConnection(Object source, ElapsedEventArgs e)
+        {
+            CheckInternetConnection();
+        }
+
+        public void CheckInternetConnection()
         {
             string nomeImagem;
             Color cor;
@@ -186,7 +201,6 @@ namespace EasyIngressos
 
             }
         }
-
         public static bool CheckConnection()
         {
             try
@@ -577,7 +591,8 @@ namespace EasyIngressos
             {
                 if (comboBox_Events.SelectedIndex != 0)
                 {
-                    await ConectionServer.GetEvent(comboBox_Events.SelectedIndex);
+                    await ConectionServer.GetEvent(AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)].id);
+
                     DialogResult result = MessageBox.Show("Sincronizado com o servidor", "Sincronized", MessageBoxButtons.OK);
 
                     if (result == DialogResult.OK)

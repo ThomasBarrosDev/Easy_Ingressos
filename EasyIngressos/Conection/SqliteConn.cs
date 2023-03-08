@@ -36,7 +36,7 @@ namespace ProjetoCores_1._0
             conexao.Close();
         }
 
-        public static bool ExistValue(string table, string key)
+        public static bool ExistValueById(string table, string id)
         {
             SetConnection();
 
@@ -45,7 +45,53 @@ namespace ProjetoCores_1._0
             DataTable dt = new DataTable();
 
             comando = conexao.CreateCommand();
-            string comandtxt = $"SELECT * FROM {table.ToUpper()} WHERE id = '{key}'";
+            string comandtxt = $"SELECT * FROM {table.ToUpper()} WHERE id = '{id}'";
+
+            dbadapter = new SQLiteDataAdapter(comandtxt, conexao);
+            dbadapter.Fill(dt);
+
+            conexao.Close();
+
+            if (dt.Rows.Count > 0)
+                return true;
+            else
+                return false;
+
+        }
+
+        public static bool ExistValue(string table)
+        {
+            SetConnection();
+
+            conexao.Open();
+
+            DataTable dt = new DataTable();
+
+            comando = conexao.CreateCommand();
+            string comandtxt = $"SELECT * FROM {table.ToUpper()}";
+
+            dbadapter = new SQLiteDataAdapter(comandtxt, conexao);
+            dbadapter.Fill(dt);
+
+            conexao.Close();
+
+            if (dt.Rows.Count > 0)
+                return true;
+            else
+                return false;
+
+        }
+
+        public static bool ExistValueByname(string table, string name)
+        {
+            SetConnection();
+
+            conexao.Open();
+
+            DataTable dt = new DataTable();
+
+            comando = conexao.CreateCommand();
+            string comandtxt = $"SELECT * FROM {table.ToUpper()} WHERE name = '{name}'";
 
             dbadapter = new SQLiteDataAdapter(comandtxt, conexao);
             dbadapter.Fill(dt);
@@ -114,9 +160,8 @@ namespace ProjetoCores_1._0
                     t.cpf_rg = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(4);
                 }
 
-
+                conexao.Close();
             }
-            conexao.Close();
 
 
             if (t.class_id != 0)
@@ -137,9 +182,8 @@ namespace ProjetoCores_1._0
                         t.class_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
                     }
 
-
+                    conexao.Close();
                 }
-                conexao.Close();
             }
 
             if (t.block_id != 0)
@@ -160,9 +204,8 @@ namespace ProjetoCores_1._0
                         t.block_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
                     }
 
-
+                    conexao.Close();
                 }
-                conexao.Close();
             }
 
             return t;
@@ -170,15 +213,15 @@ namespace ProjetoCores_1._0
 
         public static EventData SelectEvent()
         {
-
             CultureInfo culture = new CultureInfo("pt-BR");
             EventData e = new EventData();
+            e.address = new EventData.Address();
             SetConnection();
 
             conexao.Open();
 
             comando = conexao.CreateCommand();
-            string comandtxt = $"SELECT * FROM Ticket WHERE code = '{code}'";
+            string comandtxt = $"SELECT * FROM EventData";
 
             comando.CommandText = comandtxt;
 
@@ -187,14 +230,43 @@ namespace ProjetoCores_1._0
                 if (reader.HasRows)
                 {
                     reader.Read();
-                    e.name = reader.IsDBNull(0) ? 0 : reader.GetString(0);
-                    e.age_classification = reader.IsDBNull(1) ? 0 : reader.GetInt32(1);
-                    e.due_date = reader.IsDBNull(2) ? string.Empty : reader.GetString(2);
-                    e.address.street = reader.IsDBNull(3) ? string.Empty : reader.GetString(3);
-                    e.address.city = reader.IsDBNull(4) ? string.Empty : reader.GetString(4);
-                    e.address.uf = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
+                    e.id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                    e.name = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
+                    e.due_date = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
+                    e.age_classification = reader.IsDBNull(15) ? 0 : reader.GetInt32(15);      
+                    e.images = reader.IsDBNull(16) ? string.Empty: reader.GetString(16);
+                    e.event_site = reader.IsDBNull(19) ? string.Empty: reader.GetString(19);
                 }
                 conexao.Close();
+            }
+
+            conexao.Open();
+
+            comando = conexao.CreateCommand();
+            comandtxt = $"SELECT * FROM Adress WHERE event_id = '{e.id}'";
+
+            comando.CommandText = comandtxt;
+
+            using (SQLiteDataReader readerData = comando.ExecuteReader())
+            {
+
+                if (readerData.HasRows)
+                {
+                    readerData.Read();
+                    e.address.name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
+                    e.address.image = readerData.IsDBNull(2) ? string.Empty : readerData.GetString(2);
+                    e.address.street = readerData.IsDBNull(3) ? string.Empty : readerData.GetString(3);
+                    e.address.street = readerData.IsDBNull(4) ? string.Empty : readerData.GetString(4);
+                    e.address.complement = readerData.IsDBNull(5) ? string.Empty : readerData.GetString(5);  
+                    e.address.district = readerData.IsDBNull(6) ? string.Empty : readerData.GetString(6);
+                    e.address.city = readerData.IsDBNull(7) ? string.Empty : readerData.GetString(7);
+                    e.address.uf = readerData.IsDBNull(8) ? string.Empty : readerData.GetString(8);
+                    e.address.zipcode = readerData.IsDBNull(9) ? string.Empty : readerData.GetString(9);
+                    e.address.lat = readerData.IsDBNull(10) ? string.Empty : readerData.GetString(10);
+                    e.address.lon = readerData.IsDBNull(11) ? string.Empty : readerData.GetString(11);
+                }
+                
+                conexao.Close();    
             }
 
             return e;
