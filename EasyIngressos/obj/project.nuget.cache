@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "46lYcuShnZGcNmGkqsxnclu+VDKX5M6WFarltpTrmdWgtfIMcKOCYdshJgAa1ajs0N38S37gixl7LZKJPUBa+Q==",
+  "success": true,
+  "projectFilePath": "D:\\Projetos\\Easy_Ingressos\\EasyIngressos\\EasyIngressos.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Thomas\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.117\\stub.system.data.sqlite.core.netstandard.1.0.117.nupkg.sha512",
+    "C:\\Users\\Thomas\\.nuget\\packages\\supersimpletcp\\3.0.6\\supersimpletcp.3.0.6.nupkg.sha512",
+    "C:\\Users\\Thomas\\.nuget\\packages\\system.data.sqlite.core\\1.0.117\\system.data.sqlite.core.1.0.117.nupkg.sha512"
+  ],
+  "logs": []
+}

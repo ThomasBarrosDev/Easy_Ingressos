@@ -1,0 +1,196 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0-windows7.0": {
+      "Stub.System.Data.SQLite.Core.NetStandard/1.0.117": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "related": ".dll.altconfig;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "related": ".dll.altconfig;.xml"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/SQLite.Interop.dll": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-x64/native/SQLite.Interop.dll": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-x64/native/SQLite.Interop.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/SQLite.Interop.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "SuperSimpleTcp/3.0.6": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/SuperSimpleTcp.dll": {}
+        },
+        "runtime": {
+          "lib/net6.0/SuperSimpleTcp.dll": {}
+        }
+      },
+      "System.Data.SQLite.Core/1.0.117": {
+        "type": "package",
+        "dependencies": {
+          "Stub.System.Data.SQLite.Core.NetStandard": "[1.0.117]"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Stub.System.Data.SQLite.Core.NetStandard/1.0.117": {
+      "sha512": "x1zzPC/A4MmiKGDLoxLE6O5KLu7Kz7dyzhPQzlqYFTFcXmXAtM7hNNWpGw5yLEz833AnGbd/kxoitXArgR4YyA==",
+      "type": "package",
+      "path": "stub.system.data.sqlite.core.netstandard/1.0.117",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/System.Data.SQLite.dll",
+        "lib/netstandard2.0/System.Data.SQLite.dll.altconfig",
+        "lib/netstandard2.0/System.Data.SQLite.xml",
+        "lib/netstandard2.1/System.Data.SQLite.dll",
+        "lib/netstandard2.1/System.Data.SQLite.dll.altconfig",
+        "lib/netstandard2.1/System.Data.SQLite.xml",
+        "runtimes/linux-x64/native/SQLite.Interop.dll",
+        "runtimes/osx-x64/native/SQLite.Interop.dll",
+        "runtimes/win-x64/native/SQLite.Interop.dll",
+        "runtimes/win-x86/native/SQLite.Interop.dll",
+        "stub.system.data.sqlite.core.netstandard.1.0.117.nupkg.sha512",
+        "stub.system.data.sqlite.core.netstandard.nuspec"
+      ]
+    },
+    "SuperSimpleTcp/3.0.6": {
+      "sha512": "HHEsBIoSze3n49bot2VxURFaNSF8q0XN0alxsd+rVurIU7UZ0RFWTpohq+rRrT5l4AIisTjV7VFzug4wGuV3iQ==",
+      "type": "package",
+      "path": "supersimpletcp/3.0.6",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "icon.png",
+        "lib/net461/SimpleTcp.xml",
+        "lib/net461/SuperSimpleTcp.dll",
+        "lib/net48/SuperSimpleTcp.dll",
+        "lib/net5.0/SimpleTcp.xml",
+        "lib/net5.0/SuperSimpleTcp.dll",
+        "lib/net6.0/SimpleTcp.xml",
+        "lib/net6.0/SuperSimpleTcp.dll",
+        "lib/netcoreapp3.1/SimpleTcp.xml",
+        "lib/netcoreapp3.1/SuperSimpleTcp.dll",
+        "lib/netstandard2.0/SimpleTcp.xml",
+        "lib/netstandard2.0/SuperSimpleTcp.dll",
+        "lib/netstandard2.1/SimpleTcp.xml",
+        "lib/netstandard2.1/SuperSimpleTcp.dll",
+        "supersimpletcp.3.0.6.nupkg.sha512",
+        "supersimpletcp.nuspec"
+      ]
+    },
+    "System.Data.SQLite.Core/1.0.117": {
+      "sha512": "lGfOhA3QQod9XhdWYqLgNgbgq5uZnVG6DtnhDAdPisbLpTTgZBNbeGnp+GWt8C+3EyaqBYTGJWXcxHlHKwo05A==",
+      "type": "package",
+      "path": "system.data.sqlite.core/1.0.117",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "system.data.sqlite.core.1.0.117.nupkg.sha512",
+        "system.data.sqlite.core.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0-windows7.0": [
+      "SuperSimpleTcp >= 3.0.6",
+      "System.Data.SQLite.Core >= 1.0.117"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Thomas\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\Projetos\\Easy_Ingressos\\EasyIngressos\\EasyIngressos.csproj",
+      "projectName": "EasyIngressos",
+      "projectPath": "D:\\Projetos\\Easy_Ingressos\\EasyIngressos\\EasyIngressos.csproj",
+      "packagesPath": "C:\\Users\\Thomas\\.nuget\\packages\\",
+      "outputPath": "D:\\Projetos\\Easy_Ingressos\\EasyIngressos\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\Thomas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0-windows"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0-windows7.0": {
+          "targetAlias": "net7.0-windows",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0-windows7.0": {
+        "targetAlias": "net7.0-windows",
+        "dependencies": {
+          "SuperSimpleTcp": {
+            "target": "Package",
+            "version": "[3.0.6, )"
+          },
+          "System.Data.SQLite.Core": {
+            "target": "Package",
+            "version": "[1.0.117, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WindowsForms": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
