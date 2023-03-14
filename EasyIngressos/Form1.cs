@@ -13,6 +13,9 @@ using System.Reflection;
 using System.Net.NetworkInformation;
 using System.Runtime.ConstrainedExecution;
 using System.Timers;
+using System.Net;
+using System.Runtime;
+using System.Text.Json;
 
 namespace EasyIngressos
 {
@@ -23,8 +26,6 @@ namespace EasyIngressos
 
         private bool m_IsServer = false;
         private bool m_IsClient = false;
-        private float time = 0;
-        private bool isTime = false;
         private List<string> m_listClientIp = new();
         public Form1()
         {
@@ -36,7 +37,10 @@ namespace EasyIngressos
             System.Timers.Timer timer = new System.Timers.Timer(10000);
             timer.Elapsed += CheckInternetConnection;
             timer.Start();
-                
+
+            Label[] labels = { label_IdIngresso, label_TicketName, label_CPF, label_ParticipantName, label_Email, label_Telefone, label_TicketValidate };
+            AppManager.SetFormTicketData(labels);
+
             comboBox_Events.SelectedIndex = 0;
 
             CheckInternetConnection();
@@ -68,12 +72,10 @@ namespace EasyIngressos
 
                 EventData lEventdata = SqliteConn.SelectEvent();
 
-                Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
-
-
-                AppManager.SetFormEventData(labels, lEventdata);
+                AppManager.SetFormEventData(lEventdata.image_bytes, pictureBox_Event, labels, lEventdata);
 
             }
+            textBox_TicketCode.Focus();
         }
 
         public void CheckInternetConnection(Object source, ElapsedEventArgs e)
@@ -315,6 +317,30 @@ namespace EasyIngressos
             this.Invoke((MethodInvoker)delegate
             {
                 //txtInfo.Text += $"{e.IpPort}: {Encoding.UTF8.GetString(e.Data)}{Environment.NewLine}";
+
+                if (m_IsServer)
+                {
+                    string code = Encoding.UTF8.GetString(e.Data);
+
+                    TicketDataClass ticket = SqliteConn.SelectTicket(code);
+
+                    string json = JsonSerializer.Serialize(ticket);
+
+                    m_server.Send(e.IpPort ,json);
+
+                }
+
+                if (m_IsClient)
+                {
+                    string data = Encoding.UTF8.GetString(e.Data);
+
+                    TicketDataClass ticket = JsonSerializer.Deserialize<TicketDataClass>(data);
+
+                    Label[] labels = { label_IdIngresso, label_TicketName, label_CPF, label_ParticipantName, label_Email, label_Telefone, label_TicketValidate };
+                    AppManager.SetFormTicketValidate(ticket, labels, pictureBox_TicketValidate, panel_TicketValidate, textBox_TicketCode, textBox_TicketCode.Text);
+
+                }
+
             });
         }
 
@@ -380,16 +406,6 @@ namespace EasyIngressos
                 m_server = new SimpleTcpServer(txtIP.Text, 9090);
                 m_client = new SimpleTcpClient(txtIP.Text, 9090);
 
-                m_client.Events.Connected += Events_Connected;
-                m_client.Events.Disconnected += Events_Disconnected;
-                m_client.Events.DataReceived += Events_DataReceived;
-
-                m_server.Events.ClientConnected += Events_ClientConnected;
-                m_server.Events.ClientDisconnected += Events_ClientDisconnected;
-                m_server.Events.DataReceived += Events_DataReceived;
-
-
-
                 MessageBoxButtons messageBoxButtons = MessageBoxButtons.YesNo;
 
                 string value = null;
@@ -410,6 +426,10 @@ namespace EasyIngressos
                             m_IsClient = true;
                             MessageBox.Show("Conectado com sucesso no servidor :" + txtIP.Text, "Connected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             btnStart.Text = "Desconectar";
+
+                            m_client.Events.Connected += Events_Connected;
+                            m_client.Events.Disconnected += Events_Disconnected;
+                            m_client.Events.DataReceived += Events_DataReceived;
                         }
                         else
                             MessageBox.Show("Nao foi possivel conectar com o servidor :" + txtIP.Text, "Server error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -432,6 +452,10 @@ namespace EasyIngressos
 
                         m_IsServer = true;
 
+                        m_server.Events.ClientConnected += Events_ClientConnected;
+                        m_server.Events.ClientDisconnected += Events_ClientDisconnected;
+                        m_server.Events.DataReceived += Events_DataReceived;
+
                     }
                     catch (Exception ex)
                     {
@@ -440,8 +464,6 @@ namespace EasyIngressos
                     }
 
                 }
-
-                this.TopMost = true;
             }
             else
             {
@@ -459,130 +481,40 @@ namespace EasyIngressos
 
                 btnStart.Text = "Conectar";
             }
-        }
 
-        private void txtIP_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        public async Task DelayedAction(int millisecondsDelay, Action action)
-        {
-            await Task.Delay(millisecondsDelay);
-            action?.Invoke();
+            textBox_TicketCode.Text = string.Empty;
+            textBox_TicketCode.Focus();
         }
 
         private void ValidateTicket(TextBox textBox)
         {
-            TicketDataClass ticket = AppManager.ValidateTicket(textBox.Text);
+            if (!m_IsServer && !m_IsClient)
+            {
+                MessageBox.Show("Você precisa criar um servidor local ou se conectar a um para acessar o banco de dados!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
+            if (m_IsServer)
+            {
+                SendValidateTicket(textBox.Text);
+            }
+            if (m_IsClient)
+            {
+                if (m_client.IsConnected)
+                {
+                    m_client.Send(textBox_TicketCode.Text);
+                }
+            }
 
-            string nomeImagem;
+            textBox.Text = string.Empty;
+            textBox_TicketCode.Focus();
+        }
 
+        private void SendValidateTicket(string code)
+        {
+            TicketDataClass ticket = SqliteConn.SelectTicket(code);
             Label[] labels = { label_IdIngresso, label_TicketName, label_CPF, label_ParticipantName, label_Email, label_Telefone, label_TicketValidate };
-            Color cor;
-            if (ticket == null)
-            {
-
-                nomeImagem = "times-circle.png";
-
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
-                {
-                    pictureBox_TicketValidate.Image = Image.FromStream(stream);
-                }
-
-                AppManager.SetFormTicketData(labels);
-
-                label_TicketValidate.Text = "INGRESSO \r\n INEXISTENTE";
-                cor = ColorTranslator.FromHtml("#A1432E");
-                panel_TicketValidate.BackColor = cor;
-
-
-                textBox.Text = string.Empty;
-
-            }
-            else if (ticket.code == textBox.Text)
-            {
-                switch (ticket.status)
-                {
-                    case "active":
-                    case "offline":
-
-                        nomeImagem = "check-circle.png";
-
-                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
-                        {
-                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
-                        }
-
-                        AppManager.SetFormTicketData(labels, ticket);
-
-                        label_TicketValidate.Text = "INGRESSO \r\n VÁLIDO";
-                        cor = ColorTranslator.FromHtml("#2EA15C");
-                        panel_TicketValidate.BackColor = cor;
-
-                        textBox.Text = string.Empty;
-
-                        break;
-                    case "canceled":
-                        nomeImagem = "exclamation-circle.png";
-
-                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
-                        {
-                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
-                        }
-
-                        AppManager.SetFormTicketData(labels);
-
-                        label_TicketValidate.Text = "INGRESSO \r\n CANCELADO";
-                        cor = ColorTranslator.FromHtml("#2EA15C");
-                        panel_TicketValidate.BackColor = cor;
-
-                        textBox.Text = string.Empty;
-                        break;
-
-                    case "used":
-                        nomeImagem = "exclamation-circle.png";
-
-                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
-                        {
-                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
-                        }
-
-                        AppManager.SetFormTicketData(labels);
-
-                        label_TicketValidate.Text = "INGRESSO \r\n JÁ USADO";
-                        cor = ColorTranslator.FromHtml("#2EA15C");
-                        panel_TicketValidate.BackColor = cor;
-
-                        textBox.Text = string.Empty;
-                        break;
-
-                    case "denied":
-                        nomeImagem = "exclamation-circle.png";
-
-                        using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("EasyIngressos.Resources." + nomeImagem))
-                        {
-                            pictureBox_TicketValidate.Image = Image.FromStream(stream);
-                        }
-
-                        AppManager.SetFormTicketData(labels);
-
-                        label_TicketValidate.Text = "INGRESSO \r\n NEGADO";
-                        cor = ColorTranslator.FromHtml("#2EA15C");
-                        panel_TicketValidate.BackColor = cor;
-
-                        textBox.Text = string.Empty;
-
-
-                        break;
-
-                    default:
-                        break;
-                }
-
-
-
-            }
+            AppManager.SetFormTicketValidate(ticket, labels, pictureBox_TicketValidate, panel_TicketValidate, textBox_TicketCode, code);
         }
 
         private async void LinkScronizar_Click(object sender, EventArgs e)
@@ -591,6 +523,8 @@ namespace EasyIngressos
             {
                 if (comboBox_Events.SelectedIndex != 0)
                 {
+                    await ConectionServer.PostEvent();
+
                     await ConectionServer.GetEvent(AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)].id);
 
                     DialogResult result = MessageBox.Show("Sincronizado com o servidor", "Sincronized", MessageBoxButtons.OK);
@@ -626,6 +560,7 @@ namespace EasyIngressos
 
             }
 
+            textBox_TicketCode.Focus();
         }
 
         private async void pictureBox1_Click(object sender, EventArgs e)
@@ -642,11 +577,6 @@ namespace EasyIngressos
             }
         }
 
-        private void ImageScronizar_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void textBox_TicketCode_TextChanged(object sender, EventArgs e)
         {
 
@@ -661,7 +591,14 @@ namespace EasyIngressos
             if (comboBox_Events.SelectedIndex > 0)
             {
                 Label[] labels = { label_ParentalRating, label_EventName, label_EventDate, label_EventHours, label_EventAddress };
-                AppManager.SetFormEventData(labels, AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)]);
+
+                using (WebClient client = new WebClient())
+                {
+                    byte[] data = client.DownloadData(AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)].banner);
+                    AppManager.SetFormEventData(data, pictureBox_Event, labels, AppManager.EventsData[(comboBox_Events.SelectedIndex - 1)]);
+                }
+
+                textBox_TicketCode.Focus();
             }
         }
 

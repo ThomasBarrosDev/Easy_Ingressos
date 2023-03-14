@@ -107,7 +107,6 @@
             this.txtIP.Size = new System.Drawing.Size(151, 29);
             this.txtIP.TabIndex = 1;
             this.txtIP.Text = "127.0.0.1";
-            this.txtIP.TextChanged += new System.EventHandler(this.txtIP_TextChanged);
             // 
             // pictureBox_TicketValidate
             // 
@@ -212,7 +211,6 @@
             this.ImageScronizar.Size = new System.Drawing.Size(20, 19);
             this.ImageScronizar.TabIndex = 15;
             this.ImageScronizar.TabStop = false;
-            this.ImageScronizar.Click += new System.EventHandler(this.ImageScronizar_Click);
             // 
             // label2
             // 
@@ -329,9 +327,9 @@
             this.label_EventAddress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label_EventAddress.Location = new System.Drawing.Point(48, 328);
             this.label_EventAddress.Name = "label_EventAddress";
-            this.label_EventAddress.Size = new System.Drawing.Size(231, 19);
+            this.label_EventAddress.Size = new System.Drawing.Size(141, 19);
             this.label_EventAddress.TabIndex = 33;
-            this.label_EventAddress.Text = "Summit Hall, Pouso Alegre - MG";
+            this.label_EventAddress.Text = "[][][][][][][][][][][]";
             // 
             // label_EventHours
             // 
@@ -341,9 +339,9 @@
             this.label_EventHours.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label_EventHours.Location = new System.Drawing.Point(404, 304);
             this.label_EventHours.Name = "label_EventHours";
-            this.label_EventHours.Size = new System.Drawing.Size(95, 19);
+            this.label_EventHours.Size = new System.Drawing.Size(141, 19);
             this.label_EventHours.TabIndex = 32;
-            this.label_EventHours.Text = "22:00 horas ";
+            this.label_EventHours.Text = "[][][][][][][][][][][]";
             // 
             // pictureBox3
             // 
@@ -364,13 +362,12 @@
             this.label_EventDate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.label_EventDate.Location = new System.Drawing.Point(48, 304);
             this.label_EventDate.Name = "label_EventDate";
-            this.label_EventDate.Size = new System.Drawing.Size(145, 19);
+            this.label_EventDate.Size = new System.Drawing.Size(141, 19);
             this.label_EventDate.TabIndex = 31;
-            this.label_EventDate.Text = "Sábado, 30 de julho";
+            this.label_EventDate.Text = "[][][][][][][][][][][]";
             // 
             // pictureBox_Event
             // 
-            this.pictureBox_Event.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox_Event.Image")));
             this.pictureBox_Event.ImageLocation = "";
             this.pictureBox_Event.InitialImage = null;
             this.pictureBox_Event.Location = new System.Drawing.Point(24, 176);
@@ -387,9 +384,9 @@
             this.label_ParentalRating.ForeColor = System.Drawing.Color.Gray;
             this.label_ParentalRating.Location = new System.Drawing.Point(227, 269);
             this.label_ParentalRating.Name = "label_ParentalRating";
-            this.label_ParentalRating.Size = new System.Drawing.Size(272, 19);
+            this.label_ParentalRating.Size = new System.Drawing.Size(141, 19);
             this.label_ParentalRating.TabIndex = 30;
-            this.label_ParentalRating.Text = "CLASSIFICAÇÃO INDICATIVA: 18 ANOS";
+            this.label_ParentalRating.Text = "[][][][][][][][][][][]";
             // 
             // label_EventName
             // 
@@ -400,7 +397,7 @@
             this.label_EventName.Name = "label_EventName";
             this.label_EventName.Size = new System.Drawing.Size(345, 79);
             this.label_EventName.TabIndex = 29;
-            this.label_EventName.Text = "CAMAROTE AVENIDA";
+            this.label_EventName.Text = "[][][][][][][][][][][]";
             // 
             // label12
             // 
@@ -633,7 +630,6 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_TicketValidate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

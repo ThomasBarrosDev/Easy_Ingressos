@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using System.Data;
 using EasyIngressos.Entity;
 using System.Globalization;
+using EasyIngressos.Conection;
+using static EasyIngressos.Conection.EventsSynchronize;
+using System.Numerics;
 
 namespace ProjetoCores_1._0
 {
@@ -25,6 +28,39 @@ namespace ProjetoCores_1._0
             conexao = new SQLiteConnection($"Data Source={path}\\Database\\{dataBaseName};Version=3;New=False;Compress=True;");
         }
 
+        public static void ClearDB()
+        {
+            SetConnection();
+            conexao.Open();
+            comando = conexao.CreateCommand();
+
+            string deleteTickets = "DELETE FROM ticket";
+            comando.CommandText = deleteTickets;
+            comando.ExecuteNonQuery();
+
+            string deleteTicketsData = "DELETE FROM ticketdata";
+            comando.CommandText = deleteTicketsData;
+            comando.ExecuteNonQuery();
+
+            string deleteBlocks = "DELETE FROM ticketblock";
+            comando.CommandText = deleteBlocks;
+            comando.ExecuteNonQuery();
+
+            string deleteClass = "DELETE FROM ticketclass";
+            comando.CommandText = deleteClass;
+            comando.ExecuteNonQuery();
+
+            string deleteAdress = "DELETE FROM adress";
+            comando.CommandText = deleteAdress;
+            comando.ExecuteNonQuery();
+
+            string deleteEvent = "DELETE FROM EventData";
+            comando.CommandText = deleteEvent;
+            comando.ExecuteNonQuery();
+
+            conexao.Close();
+        }
+
 
         public static void ExecuteQuery(string txtQuery)
         {
@@ -32,6 +68,17 @@ namespace ProjetoCores_1._0
             conexao.Open();
             comando = conexao.CreateCommand();
             comando.CommandText = txtQuery;
+            comando.ExecuteNonQuery();
+            conexao.Close();
+        }
+
+        public static void ExecuteQuery(string txtQuery, byte[] byt)
+        {
+            SetConnection();
+            conexao.Open();
+            comando = conexao.CreateCommand();
+            comando.CommandText = txtQuery;
+            comando.Parameters.Add("@ImageData", DbType.Binary, byt.Length).Value = byt;
             comando.ExecuteNonQuery();
             conexao.Close();
         }
@@ -57,6 +104,32 @@ namespace ProjetoCores_1._0
             else
                 return false;
 
+        }
+
+        public static bool UpdateStatusTicket(TicketDataClass ticketData)
+        {
+            SetConnection();
+
+            try
+            {
+                conexao.Open();
+
+                comando = conexao.CreateCommand();
+                string comandtxt = $"UPDATE Ticket SET status = '{ticketData.status}' WHERE id = '{ticketData.id}'";
+
+                comando.CommandText = comandtxt;
+                comando.ExecuteNonQuery();
+
+                conexao.Close();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // Em caso de exceção, retorna false indicando que a operação falhou
+                conexao.Close();
+                return false;
+            }
         }
 
         public static bool ExistValue(string table)
@@ -138,11 +211,8 @@ namespace ProjetoCores_1._0
                     t.updated_at = reader.IsDBNull(11) ? string.Empty : reader.GetString(11);
                     t.deleted_at = reader.IsDBNull(12) ? string.Empty : reader.GetString(12);
                 }
-                conexao.Close();
             }
-
-            conexao.Open();
-
+            
             comando = conexao.CreateCommand();
             comandtxt = $"SELECT * FROM TicketData WHERE ticket_id = '{t.id}'";
 
@@ -160,14 +230,11 @@ namespace ProjetoCores_1._0
                     t.cpf_rg = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(4);
                 }
 
-                conexao.Close();
             }
 
 
             if (t.class_id != 0)
             {
-                conexao.Open();
-
                 comando = conexao.CreateCommand();
                 comandtxt = $"SELECT * FROM TicketClass WHERE id = '{t.class_id}'";
 
@@ -181,15 +248,11 @@ namespace ProjetoCores_1._0
                         readerData.Read();
                         t.class_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
                     }
-
-                    conexao.Close();
                 }
             }
 
             if (t.block_id != 0)
             {
-                conexao.Open();
-
                 comando = conexao.CreateCommand();
                 comandtxt = $"SELECT * FROM TicketBlock WHERE id = '{t.block_id}'";
 
@@ -204,8 +267,63 @@ namespace ProjetoCores_1._0
                         t.block_name = readerData.IsDBNull(1) ? string.Empty : readerData.GetString(1);
                     }
 
-                    conexao.Close();
                 }
+            }
+            conexao.Close();
+
+            return t;
+        }
+
+        public static EventsSynchronize SelectEventSynchronize()
+        {
+            CultureInfo culture = new CultureInfo("pt-BR");
+            EventsSynchronize t = new EventsSynchronize();
+            SetConnection();
+
+            conexao.Open();
+
+            comando = conexao.CreateCommand();
+            string comandtxt = $"SELECT * FROM EventData";
+
+            comando.CommandText = comandtxt;
+
+            using (SQLiteDataReader reader = comando.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+
+                    t.events[0] = new EventSynchronize();
+                    t.events[0].id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                }
+
+            }
+
+            comando = conexao.CreateCommand();
+            comandtxt = $"SELECT * FROM Ticket";
+
+            comando.CommandText = comandtxt;
+            List<object[]> rows = new List<object[]>();
+
+            using (SQLiteDataReader readerData = comando.ExecuteReader())
+            {
+                while (readerData.Read())
+                {
+                    object[] row = new object[readerData.FieldCount];
+                    readerData.GetValues(row);
+                    rows.Add(row);
+                }
+            }
+
+            conexao.Close();
+            t.events[0].tickets = new EventSynchronize.TicketResponse[rows.Count];
+            int i = 0;
+            foreach (object[] row in rows)
+            {
+                t.events[0].tickets[i] = new EventSynchronize.TicketResponse();
+                t.events[0].tickets[i].id = (int)(long)row[0];
+                t.events[0].tickets[i].status = row[5].ToString();
+                i++;
             }
 
             return t;
@@ -233,14 +351,13 @@ namespace ProjetoCores_1._0
                     e.id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
                     e.name = reader.IsDBNull(1) ? string.Empty : reader.GetString(1);
                     e.due_date = reader.IsDBNull(5) ? string.Empty : reader.GetString(5);
-                    e.age_classification = reader.IsDBNull(15) ? 0 : reader.GetInt32(15);      
-                    e.images = reader.IsDBNull(16) ? string.Empty: reader.GetString(16);
-                    e.event_site = reader.IsDBNull(19) ? string.Empty: reader.GetString(19);
+                    e.age_classification = reader.IsDBNull(15) ? 0 : reader.GetInt32(15);
+                    e.images = reader.IsDBNull(16) ? string.Empty : reader.GetString(16);
+                    e.event_site = reader.IsDBNull(19) ? string.Empty : reader.GetString(19);
+                    e.image_bytes = reader.IsDBNull(29)? null: (byte[])reader["image_bytes"];
                 }
-                conexao.Close();
-            }
 
-            conexao.Open();
+            }
 
             comando = conexao.CreateCommand();
             comandtxt = $"SELECT * FROM Adress WHERE event_id = '{e.id}'";
@@ -257,7 +374,7 @@ namespace ProjetoCores_1._0
                     e.address.image = readerData.IsDBNull(2) ? string.Empty : readerData.GetString(2);
                     e.address.street = readerData.IsDBNull(3) ? string.Empty : readerData.GetString(3);
                     e.address.street = readerData.IsDBNull(4) ? string.Empty : readerData.GetString(4);
-                    e.address.complement = readerData.IsDBNull(5) ? string.Empty : readerData.GetString(5);  
+                    e.address.complement = readerData.IsDBNull(5) ? string.Empty : readerData.GetString(5);
                     e.address.district = readerData.IsDBNull(6) ? string.Empty : readerData.GetString(6);
                     e.address.city = readerData.IsDBNull(7) ? string.Empty : readerData.GetString(7);
                     e.address.uf = readerData.IsDBNull(8) ? string.Empty : readerData.GetString(8);
@@ -265,10 +382,11 @@ namespace ProjetoCores_1._0
                     e.address.lat = readerData.IsDBNull(10) ? string.Empty : readerData.GetString(10);
                     e.address.lon = readerData.IsDBNull(11) ? string.Empty : readerData.GetString(11);
                 }
-                
-                conexao.Close();    
+
+
             }
 
+            conexao.Close();
             return e;
 
         }

@@ -30,6 +30,7 @@ namespace EasyIngressos.Entity
         public string status { get; set; }
         public string? banner { get; set; }
         public string images { get; set; }
+        public byte[] image_bytes { get; set; }
         public string[] event_images { get; set; }
         public string about { get; set; }
         public string event_site { get; set; }
@@ -103,7 +104,7 @@ namespace EasyIngressos.Entity
             public string created_at { get; set; }
             public string updated_at { get; set; }
             public string? deleted_at { get; set; }
-            //public TicketData ticket_data { get; set; }
+            public TicketData ticket_data { get; set; }
         }
 
         [Serializable]
